@@ -373,7 +373,7 @@ function FiltersBar({
             <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
             <Input
               placeholder="Buscar en título y contenido..."
-              value={filters.search_term || ''}
+              value={filters.search_term ?? ''}
               onChange={(e) => onFiltersChange({ ...filters, search_term: e.target.value })}
               className="pl-10"
             />
@@ -404,20 +404,20 @@ function FiltersBar({
           <Input
             type="date"
             placeholder="Desde"
-            value={filters.date_from || ''}
+            value={filters.date_from ?? ''}
             onChange={(e) => onFiltersChange({ ...filters, date_from: e.target.value })}
           />
 
           <Input
             type="date"
             placeholder="Hasta"
-            value={filters.date_to || ''}
+            value={filters.date_to ?? ''}
             onChange={(e) => onFiltersChange({ ...filters, date_to: e.target.value })}
           />
 
           {/* Review Status */}
           <Select 
-            value={filters.reviewed_status || 'all'} 
+            value={filters.reviewed_status ?? 'all'} 
             onValueChange={(value) => onFiltersChange({ 
               ...filters, 
               reviewed_status: value === 'all' ? undefined : value as any
