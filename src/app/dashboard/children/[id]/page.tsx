@@ -54,8 +54,7 @@ import { es } from 'date-fns/locale';
 export default function ChildDetailPage() {
   const params = useParams();
   const router = useRouter();
-  const childId = params.id as string;
-  const {} = useAuth();// Removed unused user variable
+  const childId = params.id as string; 
   const { loading: childLoading, getChildById } = useChildren();
   const { logs } = useLogs({ childId });
 
