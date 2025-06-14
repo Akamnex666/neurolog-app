@@ -269,6 +269,7 @@ export interface LogUpdate {
 
 // Tipo combinado para logs con información detallada
 export interface LogWithDetails extends DailyLog {
+  reviewer_name: string | null | undefined;
   child: {
     id: string;
     name: string;
