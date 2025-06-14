@@ -59,7 +59,7 @@ export function Header() {
   const [isMobile, setIsMobile] = useState(false);
   const pathname = usePathname();
 
-  const totalNotifications = (stats.pending_reviews || 0) + (stats.follow_ups_due || 0);
+  const totalNotifications = (stats.pending_reviews ?? 0) + (stats.follow_ups_due ?? 0);
 
   // Detect mobile screen size
   useEffect(() => {
