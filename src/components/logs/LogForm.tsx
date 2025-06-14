@@ -191,7 +191,7 @@ function AttachmentsManager({
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
-    if (!files ?? !user) return;
+    if (!files || !user) return;
 
     try {
       setUploading(true);
