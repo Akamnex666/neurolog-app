@@ -230,7 +230,7 @@ function MedicalInfoForm({ medicalInfo, onChange }: Readonly<MedicalInfoFormProp
 
   const addItem = (field: string, value: string, setter: (value: string) => void) => {
     if (value.trim()) {
-      const currentItems = medicalInfo[field] || [];
+      const currentItems = medicalInfo[field] ?? [];
       onChange({
         ...medicalInfo,
         [field]: [...currentItems, value.trim()]
@@ -238,11 +238,11 @@ function MedicalInfoForm({ medicalInfo, onChange }: Readonly<MedicalInfoFormProp
       setter('');
     }
   };
-  
+
 }
 
   const removeItem = (field: string, index: number) => {
-    const currentItems = medicalInfo[field] || [];
+    const currentItems = medicalInfo[field] ?? [];
     onChange({
       ...medicalInfo,
       [field]: currentItems.filter((_: any, i: number) => i !== index)
@@ -311,7 +311,7 @@ function MedicalInfoForm({ medicalInfo, onChange }: Readonly<MedicalInfoFormProp
         </Label>
         <ItemsList 
           field="allergies" 
-          items={medicalInfo.allergies || []} 
+          items={medicalInfo.allergies ?? []} 
           placeholder="Agregar alergia..." 
         />
       </div>
@@ -320,7 +320,7 @@ function MedicalInfoForm({ medicalInfo, onChange }: Readonly<MedicalInfoFormProp
         <Label className="text-base font-medium mb-3 block">Medicamentos</Label>
         <ItemsList 
           field="medications" 
-          items={medicalInfo.medications || []} 
+          items={medicalInfo.medications ?? []} 
           placeholder="Agregar medicamento..." 
         />
       </div>
@@ -329,7 +329,7 @@ function MedicalInfoForm({ medicalInfo, onChange }: Readonly<MedicalInfoFormProp
         <Label className="text-base font-medium mb-3 block">Condiciones Médicas</Label>
         <ItemsList 
           field="conditions" 
-          items={medicalInfo.conditions || []} 
+          items={medicalInfo.conditions ?? []} 
           placeholder="Agregar condición..." 
         />
       </div>
@@ -338,7 +338,7 @@ function MedicalInfoForm({ medicalInfo, onChange }: Readonly<MedicalInfoFormProp
         <Label htmlFor="emergency-notes">Notas de Emergencia</Label>
         <Textarea
           id="emergency-notes"
-          value={medicalInfo.emergency_notes || ''}
+          value={medicalInfo.emergency_notes ?? ''}
           onChange={(e) => onChange({
             ...medicalInfo,
             emergency_notes: e.target.value
@@ -357,7 +357,7 @@ function EducationalInfoForm({ educationalInfo, onChange }: EducationalInfoFormP
 
   const addItem = (field: string, value: string, setter: (value: string) => void) => {
     if (value.trim()) {
-      const currentItems = educationalInfo[field] || [];
+      const currentItems = educationalInfo[field] ?? [];
       onChange({
         ...educationalInfo,
         [field]: [...currentItems, value.trim()]
@@ -367,7 +367,7 @@ function EducationalInfoForm({ educationalInfo, onChange }: EducationalInfoFormP
   };
 
   const removeItem = (field: string, index: number) => {
-    const currentItems = educationalInfo[field] || [];
+    const currentItems = educationalInfo[field] ?? [];
     onChange({
       ...educationalInfo,
       [field]: currentItems.filter((_: any, i: number) => i !== index)
@@ -381,7 +381,7 @@ function EducationalInfoForm({ educationalInfo, onChange }: EducationalInfoFormP
           <Label htmlFor="school">Institución Educativa</Label>
           <Input
             id="school"
-            value={educationalInfo.school || ''}
+            value={educationalInfo.school ?? ''}
             onChange={(e) => onChange({
               ...educationalInfo,
               school: e.target.value
@@ -394,7 +394,7 @@ function EducationalInfoForm({ educationalInfo, onChange }: EducationalInfoFormP
           <Label htmlFor="grade">Grado/Nivel</Label>
           <Input
             id="grade"
-            value={educationalInfo.grade || ''}
+            value={educationalInfo.grade ?? ''}
             onChange={(e) => onChange({
               ...educationalInfo,
               grade: e.target.value
@@ -408,7 +408,7 @@ function EducationalInfoForm({ educationalInfo, onChange }: EducationalInfoFormP
         <Label htmlFor="teacher">Docente Principal</Label>
         <Input
           id="teacher"
-          value={educationalInfo.teacher || ''}
+          value={educationalInfo.teacher ?? ''}
           onChange={(e) => onChange({
             ...educationalInfo,
             teacher: e.target.value
@@ -424,7 +424,7 @@ function EducationalInfoForm({ educationalInfo, onChange }: EducationalInfoFormP
         </Label>
         <div className="space-y-2">
           <div className="flex flex-wrap gap-2">
-            {(educationalInfo.iep_goals || []).map((goal: string, index: number) => (
+            {(educationalInfo.iep_goals ?? []).map((goal: string, index: number) => (
               <Badge key={index} variant="secondary" className="text-sm">
                 {goal}
                 <Button
@@ -468,7 +468,7 @@ function EducationalInfoForm({ educationalInfo, onChange }: EducationalInfoFormP
         <Label className="text-base font-medium mb-3 block">Acomodaciones</Label>
         <div className="space-y-2">
           <div className="flex flex-wrap gap-2">
-            {(educationalInfo.accommodations || []).map((accommodation: string, index: number) => (
+            {(educationalInfo.accommodations ?? []).map((accommodation: string, index: number) => (
               <Badge key={index} variant="secondary" className="text-sm">
                 {accommodation}
                 <Button
@@ -574,7 +574,7 @@ function PrivacySettingsForm({ settings, onChange }: PrivacySettingsFormProps) {
           value={settings.data_retention_months}
           onChange={(e) => onChange({
             ...settings,
-            data_retention_months: parseInt(e.target.value) || 24
+            data_retention_months: parseInt(e.target.value) ?? 24
           })}
         />
         <p className="text-sm text-gray-600 mt-1">
@@ -599,26 +599,26 @@ export default function ChildForm({ child, mode, onSuccess, onCancel }: ChildFor
   const form = useForm<ChildFormData>({
     resolver: zodResolver(childFormSchema),
     defaultValues: {
-      name: child?.name || '',
-      birth_date: child?.birth_date || '',
-      diagnosis: child?.diagnosis || '',
-      notes: child?.notes || '',
-      avatar_url: child?.avatar_url || '',
-      emergency_contact: child?.emergency_contact || [],
-      medical_info: child?.medical_info || {
+      name: child?.name ?? '',
+      birth_date: child?.birth_date ?? '',
+      diagnosis: child?.diagnosis ?? '',
+      notes: child?.notes ?? '',
+      avatar_url: child?.avatar_url ?? '',
+      emergency_contact: child?.emergency_contact ?? [],
+      medical_info: child?.medical_info ?? {
         allergies: [],
         medications: [],
         conditions: [],
         emergency_notes: ''
       },
-      educational_info: child?.educational_info || {
+      educational_info: child?.educational_info ?? {
         school: '',
         grade: '',
         teacher: '',
         iep_goals: [],
         accommodations: []
       },
-      privacy_settings: child?.privacy_settings || {
+      privacy_settings: child?.privacy_settings ?? {
         share_with_specialists: true,
         share_progress_reports: true,
         allow_photo_sharing: false,
@@ -629,7 +629,7 @@ export default function ChildForm({ child, mode, onSuccess, onCancel }: ChildFor
 
   const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (!file || !user) return;
+    if (!file ?? !user) return;
 
     try {
       setUploading(true);
@@ -749,7 +749,7 @@ export default function ChildForm({ child, mode, onSuccess, onCancel }: ChildFor
                       alt={form.watch('name')}
                     />
                     <AvatarFallback className="bg-blue-100 text-blue-600 text-2xl">
-                      {form.watch('name')?.charAt(0)?.toUpperCase() || 'N'}
+                      {form.watch('name')?.charAt(0)?.toUpperCase() ?? 'N'}
                     </AvatarFallback>
                   </Avatar>
                   
