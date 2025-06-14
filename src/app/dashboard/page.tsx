@@ -50,7 +50,7 @@ interface RecentLogsProps {
 // COMPONENTE DE ESTADÍSTICAS RÁPIDAS RESPONSIVO
 // ================================================================
 
-function QuickStats({ stats, loading }: QuickStatsProps) {
+function QuickStats({ stats, loading }: Readonly<QuickStatsProps>) {
   const statCards = [
     {
       title: 'Niños',
