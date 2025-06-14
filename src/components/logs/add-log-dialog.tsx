@@ -83,7 +83,7 @@ export function AddLogDialog({ open, onOpenChange, preselectedChildId }: AddLogD
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
-    if (!formData.child_id ?? !formData.title.trim() ?? !formData.content.trim()) {
+    if (!formData.child_id || !formData.title.trim() || !formData.content.trim()) {
       toast({
         title: "Error de validación",
         description: "Todos los campos requeridos deben estar completos",
