@@ -18,7 +18,6 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { DatePickerWithRange } from '@/components/ui/date-range-picker';
-import { useAuth } from '@/components/providers/AuthProvider';
 import { useChildren } from '@/hooks/use-children';
 import { useLogs } from '@/hooks/use-logs';
 import { ProgressChart } from '@/components/reports/ProgressChart';
@@ -63,12 +62,30 @@ function calculateImprovementTrend(logs: any[]): number {
   return secondAvg - firstAvg;
 }
 
-export default function ReportsPage() {
-  const { } = useAuth();
+// Helper to filter logs based on selected child and date range
+function filterLogs(
+  logs: any[],
+  selectedChild: string,
+  dateRange: DateRange | undefined
+) {
+  return logs.filter(log => {
+    if (selectedChild !== 'all' && log.child_id !== selectedChild) {
+      return false;
+    }
+    if (dateRange?.from && new Date(log.created_at) < dateRange.from) {
+      return false;
+    }
+    if (dateRange?.to && new Date(log.created_at) > dateRange.to) {
+      return false;
+    }
+    return true;
+  });
+}
+
+export default function ReportsPage() { 
   const { children, loading: childrenLoading } = useChildren();
   const { logs, loading: logsLoading } = useLogs();
 
-  
   const [selectedChild, setSelectedChild] = useState<string>('all');
   const [dateRange, setDateRange] = useState<DateRange | undefined>({
     from: subMonths(new Date(), 3),
@@ -78,21 +95,7 @@ export default function ReportsPage() {
   const [isExportDialogOpen, setIsExportDialogOpen] = useState(false);
 
   // Filtrar logs según selecciones
-  const filteredLogs = logs.filter(log => {
-    if (selectedChild !== 'all' && log.child_id !== selectedChild) {
-      return false;
-    }
-    
-    if (dateRange?.from && new Date(log.created_at) < dateRange.from) {
-      return false;
-    }
-    
-    if (dateRange?.to && new Date(log.created_at) > dateRange.to) {
-      return false;
-    }
-    
-    return true;
-  });
+  const filteredLogs = filterLogs(logs, selectedChild, dateRange);
 
   // Calcular métricas
   const metrics = {
