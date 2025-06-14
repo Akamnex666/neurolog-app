@@ -12,8 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch'
 import { useAuth } from '@/components/providers/AuthProvider'
 import { useToast } from '@/components/ui/use-toast'
-import { 
-  Settings, 
+import {  
   User, 
   Bell, 
   Shield, 
@@ -91,7 +90,7 @@ export default function SettingsPage() {
       console.error('Error updating profile:', error)
       toast({
         title: "Error al actualizar",
-        description: error.message || "No se pudieron guardar los cambios.",
+        description: error.message ?? "No se pudieron guardar los cambios.",
         variant: "destructive"
       })
     } finally {
@@ -237,9 +236,9 @@ export default function SettingsPage() {
 
           <div className="space-y-2">
             <Label htmlFor="role">Rol en la aplicación</Label>
-            <Select 
-              value={profileData.role} 
-              onValueChange={(value) => setProfileData(prev => ({ ...prev, role: value as any }))}
+            <Select
+              value={profileData.role}
+              onValueChange={(value) => setProfileData(prev => ({ ...prev, role: value }))}
               disabled={!isEditing}
             >
               <SelectTrigger>
