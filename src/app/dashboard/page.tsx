@@ -153,7 +153,7 @@ function QuickStats({ stats, loading }: Readonly<QuickStatsProps>) {
 // COMPONENTE DE NIÑOS ACCESIBLES RESPONSIVO
 // ================================================================
 
-function AccessibleChildren({ children, loading }: AccessibleChildrenProps) {
+function AccessibleChildren({ children, loading }: Readonly<AccessibleChildrenProps>) {
   if (loading) {
     return (
       <div className="grid gap-3 sm:gap-4 md:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
@@ -174,7 +174,8 @@ function AccessibleChildren({ children, loading }: AccessibleChildrenProps) {
       </div>
     );
   }
-
+  return <>{children}</>;
+}
   if (children.length === 0) {
     return (
       <div className="text-center py-8 sm:py-12">
