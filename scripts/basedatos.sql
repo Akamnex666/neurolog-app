@@ -46,12 +46,23 @@ DROP TABLE IF EXISTS profiles CASCADE;
 -- 2. CREAR TABLAS PRINCIPALES
 -- ================================================================
 
+-- Definir ENUM para roles de usuario
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'user_role_enum') THEN
+    CREATE TYPE user_role_enum AS ENUM ('parent', 'teacher', 'specialist', 'admin');
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'relationship_type_enum') THEN
+    CREATE TYPE relationship_type_enum AS ENUM ('parent', 'teacher', 'specialist', 'observer', 'family');
+  END IF;
+END$$;
+
 -- TABLA: profiles (usuarios del sistema)
 CREATE TABLE profiles (
   id UUID REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY,
   email TEXT UNIQUE NOT NULL,
   full_name TEXT NOT NULL,
-  role TEXT CHECK (role IN ('parent', 'teacher', 'specialist', 'admin')) DEFAULT 'parent',
+  role user_role_enum DEFAULT 'parent',
   avatar_url TEXT,
   phone TEXT,
   is_active BOOLEAN DEFAULT TRUE,
@@ -75,9 +86,6 @@ CREATE TABLE categories (
   is_active BOOLEAN DEFAULT TRUE,
   sort_order INTEGER DEFAULT 0,
   created_by UUID REFERENCES profiles(id),
-  created_at TIMESTAMPTZ DEFAULT NOW()
-);
-
 -- TABLA: children (niños)
 CREATE TABLE children (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -90,23 +98,18 @@ CREATE TABLE children (
   emergency_contact JSONB DEFAULT '[]',
   medical_info JSONB DEFAULT '{}',
   educational_info JSONB DEFAULT '{}',
-  privacy_settings JSONB DEFAULT '{
-    "share_with_specialists": true,
-    "share_progress_reports": true,
-    "allow_photo_sharing": false,
-    "data_retention_months": 36
-  }',
+  privacy_settings JSONB DEFAULT '{"share_with_specialists": true, "share_progress_reports": true, "allow_photo_sharing": false, "data_retention_months": 36}',
   created_by UUID REFERENCES profiles(id) NOT NULL,
   created_at TIMESTAMPTZ DEFAULT NOW(),
-  updated_at TIMESTAMPTZ DEFAULT NOW()
+  relationship_type relationship_type_enum NOT NULL
 );
-
+  created_at TIMESTAMPTZ DEFAULT NOW(),
 -- TABLA: user_child_relations (relaciones usuario-niño)
 CREATE TABLE user_child_relations (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   user_id UUID REFERENCES profiles(id) ON DELETE CASCADE NOT NULL,
   child_id UUID REFERENCES children(id) ON DELETE CASCADE NOT NULL,
-  relationship_type TEXT CHECK (relationship_type IN ('parent', 'teacher', 'specialist', 'observer', 'family')) NOT NULL,
+  relationship_type relationship_type_enum NOT NULL,
   can_edit BOOLEAN DEFAULT FALSE,
   can_view BOOLEAN DEFAULT TRUE,
   can_export BOOLEAN DEFAULT FALSE,
@@ -118,6 +121,9 @@ CREATE TABLE user_child_relations (
   notes TEXT,
   notification_preferences JSONB DEFAULT '{}',
   created_at TIMESTAMPTZ DEFAULT NOW(),
+  
+  UNIQUE(user_id, child_id, relationship_type)
+);
   
   UNIQUE(user_id, child_id, relationship_type)
 );
@@ -149,7 +155,7 @@ CREATE TABLE daily_logs (
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
-
+  user_role user_role_enum,
 -- TABLA: audit_logs (auditoría del sistema)
 CREATE TABLE audit_logs (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -211,9 +217,9 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- Función para crear perfil automáticamente cuando se registra usuario
-CREATE OR REPLACE FUNCTION handle_new_user()
-RETURNS TRIGGER AS $$
+    COALESCE(NEW.raw_user_meta_data->>'full_name', split_part(NEW.email, '@', 1)),
+    COALESCE(NEW.raw_user_meta_data->>'role', 'parent')::user_role_enum
+  );
 BEGIN
   INSERT INTO profiles (id, email, full_name, role)
   VALUES (
@@ -260,11 +266,11 @@ CREATE TRIGGER on_auth_user_created
 CREATE OR REPLACE FUNCTION user_can_access_child(child_uuid UUID)
 RETURNS BOOLEAN AS $$
 BEGIN
-  RETURN EXISTS (
-    SELECT 1 FROM children 
+  RETURN (
+    SELECT COUNT(*) FROM children 
     WHERE id = child_uuid 
       AND created_by = auth.uid()
-  );
+  ) > 0;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
@@ -293,7 +299,7 @@ BEGIN
     operation,
     record_id,
     user_id,
-    user_role,
+    (SELECT role FROM profiles WHERE id = auth.uid()),
     new_values,
     risk_level
   ) VALUES (
@@ -310,8 +316,7 @@ BEGIN
     'medium'
   );
 EXCEPTION
-  WHEN OTHERS THEN
-    NULL; -- No fallar por errores de auditoría
+  WHEN OTHERS THEN 
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 

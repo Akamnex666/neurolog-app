@@ -198,16 +198,16 @@ export default function ReportsPage() {
           value={metrics.averageMood.toFixed(1)}
           suffix="/5"
           icon={Heart}
-          color={metrics.averageMood >= 4 ? 'green' : metrics.averageMood >= 3 ? 'orange' : 'red'}
+          color={getMoodColor(metrics.averageMood)}
           subtitle="Promedio del período"
         />
-        
+
         <MetricCard
           title="Tendencia"
           value={metrics.improvementTrend > 0 ? '+' : ''}
-          icon={metrics.improvementTrend > 0 ? TrendingUp : metrics.improvementTrend < 0 ? TrendingUp : Target}
-          color={metrics.improvementTrend > 0 ? 'green' : metrics.improvementTrend < 0 ? 'red' : 'gray'}
-          subtitle={metrics.improvementTrend > 0 ? 'Mejorando' : metrics.improvementTrend < 0 ? 'Necesita atención' : 'Estable'}
+          icon={getTrendIcon(metrics.improvementTrend)}
+          color={getTrendColor(metrics.improvementTrend)}
+          subtitle={getTrendLabel(metrics.improvementTrend)}
         />
         
         <MetricCard
