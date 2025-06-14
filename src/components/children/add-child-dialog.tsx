@@ -57,8 +57,6 @@ export function AddChildDialog({ open, onOpenChange }: Readonly<AddChildDialogPr
     notes: ''
   });
 
-}
-
   const [loading, setLoading] = useState(false)
   const { addChild } = useChildren()
   const { toast } = useToast()
