@@ -101,9 +101,9 @@ export function useLogs(options: UseLogsOptions = {}): UseLogsReturn {
     const current = options;
     
     return (
-      prev.childId !== current.childId ??
-      prev.includePrivate !== current.includePrivate ??
-      prev.includeDeleted !== current.includeDeleted ??
+      prev.childId !== current.childId ||
+      prev.includePrivate !== current.includePrivate ||
+      prev.includeDeleted !== current.includeDeleted ||
       prev.pageSize !== current.pageSize
     );
   }, [options]);

@@ -82,7 +82,7 @@ export function EditLogDialog({ log, open, onOpenChange }: EditLogDialogProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
-    if (!formData.title.trim() ?? !formData.content.trim()) {
+    if (!formData.title.trim() || !formData.content.trim()) {
       toast({
         title: "Error de validación",
         description: "El título y contenido son requeridos",
