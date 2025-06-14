@@ -55,13 +55,13 @@ export default function ChildDetailPage() {
   const params = useParams();
   const router = useRouter();
   const childId = params.id as string;
-  const { user } = useAuth();
-  const { children, loading: childLoading, getChildById } = useChildren();
-  const { logs, loading: logsLoading, stats } = useLogs({ childId });
-  
+  const {} = useAuth();// Removed unused user variable
+  const { loading: childLoading, getChildById } = useChildren();
+  const { logs } = useLogs({ childId });
+
   const [child, setChild] = useState<ChildWithRelation | null>(null);
   const [activeTab, setActiveTab] = useState('overview');
-
+  
   useEffect(() => {
     if (childId && !childLoading) {
       const foundChild = getChildById(childId);
