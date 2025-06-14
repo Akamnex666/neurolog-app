@@ -46,7 +46,7 @@ DROP TABLE IF EXISTS profiles CASCADE;
 -- 2. CREAR TABLAS PRINCIPALES
 -- ================================================================
 
--- Definir ENUM para roles de usuario
+-- Definir ENUM para roles de usuario y otros tipos
 DO $$
 BEGIN
   IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'user_role_enum') THEN
@@ -54,6 +54,9 @@ BEGIN
   END IF;
   IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'relationship_type_enum') THEN
     CREATE TYPE relationship_type_enum AS ENUM ('parent', 'teacher', 'specialist', 'observer', 'family');
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'intensity_level_enum') THEN
+    CREATE TYPE intensity_level_enum AS ENUM ('low', 'medium', 'high');
   END IF;
 END$$;
 
@@ -133,7 +136,7 @@ CREATE TABLE daily_logs (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   child_id UUID REFERENCES children(id) ON DELETE CASCADE NOT NULL,
   category_id UUID REFERENCES categories(id),
-  title TEXT NOT NULL CHECK (length(trim(title)) >= 2),
+  intensity_level intensity_level_enum DEFAULT 'medium',
   content TEXT NOT NULL,
   mood_score INTEGER CHECK (mood_score >= 1 AND mood_score <= 10),
   intensity_level TEXT CHECK (intensity_level IN ('low', 'medium', 'high')) DEFAULT 'medium',
@@ -155,7 +158,6 @@ CREATE TABLE daily_logs (
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
-  user_role user_role_enum,
 -- TABLA: audit_logs (auditoría del sistema)
 CREATE TABLE audit_logs (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -163,7 +165,7 @@ CREATE TABLE audit_logs (
   operation TEXT CHECK (operation IN ('INSERT', 'UPDATE', 'DELETE', 'SELECT')) NOT NULL,
   record_id TEXT,
   user_id UUID REFERENCES profiles(id),
-  user_role TEXT,
+  user_role user_role_enum,
   old_values JSONB,
   new_values JSONB,
   changed_fields TEXT[],
@@ -295,11 +297,12 @@ CREATE OR REPLACE FUNCTION audit_sensitive_access(
 RETURNS VOID AS $$
 BEGIN
   INSERT INTO audit_logs (
+  INSERT INTO audit_logs (
     table_name,
     operation,
     record_id,
     user_id,
-    (SELECT role FROM profiles WHERE id = auth.uid()),
+    user_role,
     new_values,
     risk_level
   ) VALUES (
@@ -315,7 +318,6 @@ BEGIN
     ),
     'medium'
   );
-EXCEPTION
   WHEN OTHERS THEN 
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
@@ -328,7 +330,7 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 CREATE OR REPLACE VIEW user_accessible_children AS
 SELECT 
   c.*,
-  'parent'::TEXT as relationship_type,
+  'parent'::relationship_type_enum as relationship_type,
   true as can_edit,
   true as can_view,
   true as can_export,
@@ -355,7 +357,7 @@ SELECT
   COUNT(CASE WHEN dl.is_private THEN 1 END) as private_logs,
   COUNT(CASE WHEN dl.reviewed_at IS NOT NULL THEN 1 END) as reviewed_logs
 FROM children c
-LEFT JOIN daily_logs dl ON c.id = dl.child_id AND dl.is_deleted = false
+LEFT JOIN daily_logs dl ON c.id = dl.child_id AND NOT dl.is_deleted
 WHERE c.created_by = auth.uid()
 GROUP BY c.id, c.name;
 
@@ -470,47 +472,48 @@ DECLARE
   policy_count INTEGER;
   function_count INTEGER;
   category_count INTEGER;
+  schema_name CONSTANT TEXT := 'public';
 BEGIN
   -- Contar tablas
   SELECT COUNT(*) INTO table_count
   FROM information_schema.tables 
-  WHERE table_schema = 'public' 
+  WHERE table_schema = schema_name
     AND table_name IN ('profiles', 'children', 'user_child_relations', 'daily_logs', 'categories', 'audit_logs');
   
-  result := result || 'Tablas creadas: ' || table_count || '/6' || E'\n';
+  result := result ?? 'Tablas creadas: ' ?? table_count ?? '/6' ?? E'\n';
   
   -- Contar políticas
   SELECT COUNT(*) INTO policy_count
   FROM pg_policies 
-  WHERE schemaname = 'public';
+  WHERE schemaname = schema_name;
   
-  result := result || 'Políticas RLS: ' || policy_count || E'\n';
+  result := result ?? 'Políticas RLS: ' ?? policy_count ?? E'\n';
   
   -- Contar funciones
   SELECT COUNT(*) INTO function_count
   FROM pg_proc 
   WHERE proname IN ('user_can_access_child', 'user_can_edit_child', 'audit_sensitive_access');
   
-  result := result || 'Funciones RPC: ' || function_count || '/3' || E'\n';
+  result := result ?? 'Funciones RPC: ' ?? function_count ?? '/3' ?? E'\n';
   
   -- Contar categorías
   SELECT COUNT(*) INTO category_count
   FROM categories WHERE is_active = true;
   
-  result := result || 'Categorías: ' || category_count || '/10' || E'\n';
+  result := result ?? 'Categorías: ' ?? category_count ?? '/10' ?? E'\n';
   
   -- Verificar RLS
   IF (SELECT COUNT(*) FROM pg_class c 
       JOIN pg_namespace n ON n.oid = c.relnamespace 
-      WHERE n.nspname = 'public' 
+      WHERE n.nspname = schema_name
         AND c.relname = 'children' 
         AND c.relrowsecurity = true) > 0 THEN
-    result := result || 'RLS: ✅ Habilitado' || E'\n';
+    result := result ?? 'RLS: ✅ Habilitado' ?? E'\n';
   ELSE
-    result := result || 'RLS: ❌ Deshabilitado' || E'\n';
+    result := result ?? 'RLS: ❌ Deshabilitado' ?? E'\n';
   END IF;
   
-  result := result || E'\n🎉 BASE DE DATOS NEUROLOG CONFIGURADA COMPLETAMENTE';
+  result := result ?? E'\n🎉 BASE DE DATOS NEUROLOG CONFIGURADA COMPLETAMENTE';
   
   RETURN result;
 END;
