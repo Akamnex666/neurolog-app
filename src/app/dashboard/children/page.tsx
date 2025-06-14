@@ -207,10 +207,13 @@ function FiltersCard({ filters, onFiltersChange }: FiltersCardProps) {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* Búsqueda por nombre */}
           <div className="space-y-2">
-            <label className="text-sm font-medium">Buscar por nombre</label>
+            <label htmlFor="searchByName" className="text-sm font-medium">
+              Buscar por nombre
+            </label>
             <div className="relative">
               <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
               <Input
+                id="searchByName"
                 placeholder="Nombre del niño..."
                 value={filters.search || ''}
                 onChange={(e) => onFiltersChange({ ...filters, search: e.target.value })}
@@ -218,6 +221,8 @@ function FiltersCard({ filters, onFiltersChange }: FiltersCardProps) {
               />
             </div>
           </div>
+  </div>
+</CardContent>
 
           {/* Relación */}
           <Select 
@@ -240,26 +245,24 @@ function FiltersCard({ filters, onFiltersChange }: FiltersCardProps) {
             </SelectContent>
           </Select>
 
-          {/* Rango de edad */}
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Edad máxima</label>
-            <Input
-              type="number"
-              placeholder="Años"
-              min="0"
-              max="25"
-              value={filters.max_age || ''}
-              onChange={(e) => onFiltersChange({ 
-                ...filters, 
-                max_age: e.target.value ? parseInt(e.target.value) : undefined 
-              })}
-            />
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-  );
-}
+      {/* Rango de edad */}
+      <div className="space-y-2">
+        <label htmlFor="maxAgeInput" className="text-sm font-medium">  {/* ¡Agregar htmlFor! */}
+          Edad máxima
+        </label>
+        <Input
+          id="maxAgeInput"  {/* ¡Agregar id que coincida con htmlFor! */}
+          type="number"
+          placeholder="Años"
+          min="0"
+          max="25"
+          value={filters.max_age || ''}
+          onChange={(e) => onFiltersChange({
+            ...filters,
+            max_age: e.target.value ? parseInt(e.target.value) : undefined
+          })}
+        />
+      </div>
 
 // ================================================================
 // COMPONENTE PRINCIPAL
