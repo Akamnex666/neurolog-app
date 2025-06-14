@@ -337,7 +337,13 @@ interface FiltersBarProps {
   filteredCount: number;
 }
 
-function FiltersBar({ filters, onFiltersChange, children, totalCount, filteredCount }: FiltersBarProps) {
+function FiltersBar({ 
+  filters, 
+  onFiltersChange, 
+  children, 
+  totalCount, 
+  filteredCount 
+}: Readonly<FiltersBarProps>) {
   return (
     <Card>
       <CardHeader>
