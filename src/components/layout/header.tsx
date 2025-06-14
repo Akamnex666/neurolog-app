@@ -103,7 +103,7 @@ export function Header() {
       }
     }
     
-    return title || 'NeuroLog';
+    return title ?? 'NeuroLog';
   };
 
   const getUserInitials = () => {
@@ -180,7 +180,7 @@ export function Header() {
                       href={item.href}
                       className={cn(
                         "flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors",
-                        pathname === item.href || pathname.startsWith(item.href + '/')
+                        pathname === item.href ?? pathname.startsWith(item.href + '/')
                           ? "bg-blue-100 text-blue-700"
                           : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
                       )}
@@ -299,7 +299,7 @@ export function Header() {
                 </Avatar>
                 <div className="hidden sm:block text-left">
                   <p className="text-xs sm:text-sm font-medium text-gray-900 truncate max-w-24 lg:max-w-32">
-                    {user?.full_name || 'Usuario'}
+                    {user?.full_name ?? 'Usuario'}
                   </p>
                   <p className="text-xs text-gray-500 capitalize">
                     {user?.role === 'parent' ? 'Padre/Madre' : 
