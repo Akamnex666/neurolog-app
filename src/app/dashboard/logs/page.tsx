@@ -403,18 +403,19 @@ function FiltersBar({
           {/* Date Range */}
           <Input
             type="date"
-            placeholder="Desde"
-            value={filters.date_from ?? ''}
-            onChange={(e) => onFiltersChange({ ...filters, date_from: e.target.value })}
-          />
-
-          <Input
-            type="date"
             placeholder="Hasta"
-            value={filters.date_to ?? ''}
+            value={filters.date_to ?? ''}  // Cambiado de || a ??
             onChange={(e) => onFiltersChange({ ...filters, date_to: e.target.value })}
           />
 
+          {/* Review Status */}
+          <Select
+            value={filters.reviewed_status ?? 'all'}  // Cambiado de || a ??
+            onValueChange={(value) => onFiltersChange({
+              ...filters,
+              reviewed_status: value === 'all' ? undefined : (value as 'reviewed' | 'pending')
+            })}
+          />
           {/* Review Status */}
           <Select 
             value={filters.reviewed_status ?? 'all'} 
