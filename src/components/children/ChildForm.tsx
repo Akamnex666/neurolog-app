@@ -30,6 +30,7 @@ import { useChildren } from '@/hooks/use-children';
 import { uploadFile, getPublicUrl } from '@/lib/supabase';
 import type { Child, ChildInsert, ChildUpdate, EmergencyContact } from '@/types';
 import { 
+
   ImageIcon, 
   PlusIcon, 
   TrashIcon, 
@@ -118,7 +119,7 @@ interface PrivacySettingsFormProps {
 // COMPONENTES AUXILIARES
 // ================================================================
 
-function EmergencyContactForm({ contacts, onChange }: EmergencyContactFormProps) {
+function EmergencyContactForm({ contacts, onChange }: Readonly<EmergencyContactFormProps>) {
   const addContact = () => {
     onChange([...contacts, {
       name: '',
@@ -127,6 +128,7 @@ function EmergencyContactForm({ contacts, onChange }: EmergencyContactFormProps)
       is_primary: contacts.length === 0
     }]);
   };
+}
 
   const removeContact = (index: number) => {
     const newContacts = contacts.filter((_, i) => i !== index);
@@ -220,9 +222,8 @@ function EmergencyContactForm({ contacts, onChange }: EmergencyContactFormProps)
       )}
     </div>
   );
-}
 
-function MedicalInfoForm({ medicalInfo, onChange }: MedicalInfoFormProps) {
+function MedicalInfoForm({ medicalInfo, onChange }: Readonly<MedicalInfoFormProps>) {
   const [newAllergy, setNewAllergy] = useState('');
   const [newMedication, setNewMedication] = useState('');
   const [newCondition, setNewCondition] = useState('');
@@ -237,6 +238,8 @@ function MedicalInfoForm({ medicalInfo, onChange }: MedicalInfoFormProps) {
       setter('');
     }
   };
+  
+}
 
   const removeItem = (field: string, index: number) => {
     const currentItems = medicalInfo[field] || [];
