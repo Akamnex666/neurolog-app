@@ -439,7 +439,7 @@ function FiltersBar({
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {/* Intensity Level */}
           <Select 
-            value={filters.intensity_level || 'all'} 
+            value={filters.intensity_level ?? 'all'} 
             onValueChange={(value) => onFiltersChange({ 
               ...filters, 
               intensity_level: value === 'all' ? undefined : value as IntensityLevel
@@ -463,7 +463,7 @@ function FiltersBar({
               placeholder="Humor mín"
               min="1"
               max="5"
-              value={filters.mood_score_min || ''}
+              value={filters.mood_score_min ?? ''}
               onChange={(e) => onFiltersChange({ 
                 ...filters, 
                 mood_score_min: e.target.value ? parseInt(e.target.value) : undefined 
@@ -474,7 +474,7 @@ function FiltersBar({
               placeholder="Humor máx"
               min="1"
               max="5"
-              value={filters.mood_score_max || ''}
+              value={filters.mood_score_max ?? ''}
               onChange={(e) => onFiltersChange({ 
                 ...filters, 
                 mood_score_max: e.target.value ? parseInt(e.target.value) : undefined 
@@ -502,7 +502,7 @@ function FiltersBar({
 
           {/* Follow-up Status */}
           <Select 
-            value={filters.follow_up_status || 'all'} 
+            value={filters.follow_up_status ?? 'all'} 
             onValueChange={(value) => onFiltersChange({ 
               ...filters, 
               follow_up_status: value === 'all' ? undefined : value as any
