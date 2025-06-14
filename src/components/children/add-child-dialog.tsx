@@ -30,13 +30,35 @@ interface FormData {
   notes: string
 }
 
-export function AddChildDialog({ open, onOpenChange }: AddChildDialogProps) {
+interface FormData {
+  name: string;
+  birth_date: string;
+  diagnosis: string;
+  notes: string;
+}
+
+interface FormData {
+  name: string;
+  birth_date: string;
+  diagnosis: string;
+  notes: string;
+}
+
+interface AddChildDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}
+
+export function AddChildDialog({ open, onOpenChange }: Readonly<AddChildDialogProps>) {
   const [formData, setFormData] = useState<FormData>({
     name: '',
     birth_date: '',
     diagnosis: '',
     notes: ''
-  })
+  });
+
+}
+
   const [loading, setLoading] = useState(false)
   const { addChild } = useChildren()
   const { toast } = useToast()
@@ -88,7 +110,7 @@ export function AddChildDialog({ open, onOpenChange }: AddChildDialogProps) {
     } catch (error: any) {
       toast({
         title: "Error",
-        description: error.message || "No se pudo agregar el niño",
+        description: error.message ?? "No se pudo agregar el niño",
         variant: "destructive",
       })
     } finally {

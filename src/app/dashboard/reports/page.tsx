@@ -353,13 +353,13 @@ interface MetricCardProps {
   suffix?: string;
 }
 
-function MetricCard({
-  title,
-  value,
-  icon: Icon,
-  color,
-  subtitle,
-  suffix
+function MetricCard({ 
+  title, 
+  value, 
+  icon: Icon, 
+  color, 
+  subtitle, 
+  suffix 
 }: Readonly<MetricCardProps>) {
   const colorClasses = {
     blue: 'bg-blue-100 text-blue-600',
