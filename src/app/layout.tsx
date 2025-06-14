@@ -59,9 +59,7 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body className={inter.className}>
-        {/* ✅ ERROR BOUNDARY PRINCIPAL QUE ENVUELVE TODO */}
         <ErrorBoundary fallback={<LayoutErrorFallback />}>
-          {/* ✅ AUTH PROVIDER PROTEGIDO POR ERROR BOUNDARY */}
           <ErrorBoundary 
             fallback={
               <div className="min-h-screen flex items-center justify-center bg-gray-50">
