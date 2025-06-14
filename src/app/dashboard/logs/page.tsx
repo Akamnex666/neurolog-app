@@ -284,7 +284,8 @@ function LogCard({ log, onEdit, onViewDetails, onTogglePrivacy, onAddFeedback }:
           </div>
 
           {/* Feedback Preview */}
-          {(log.specialist_notes || log.parent_feedback) && (
+          {(log.specialist_notes ??
+           log.parent_feedback) && (
             <div className="mt-2 space-y-1">
               {log.specialist_notes && (
                 <div className="text-xs text-purple-600 bg-purple-50 p-2 rounded">
@@ -381,7 +382,7 @@ function FiltersBar({
 
           {/* Child Filter */}
           <Select 
-            value={filters.child_id || 'all'} 
+            value={filters.child_id ?? 'all'} 
             onValueChange={(value) => onFiltersChange({ 
               ...filters, 
               child_id: value === 'all' ? undefined : value 
@@ -404,13 +405,13 @@ function FiltersBar({
           <Input
             type="date"
             placeholder="Hasta"
-            value={filters.date_to ?? ''}  // Cambiado de || a ??
+            value={filters.date_to ?? ''}
             onChange={(e) => onFiltersChange({ ...filters, date_to: e.target.value })}
           />
 
           {/* Review Status */}
           <Select
-            value={filters.reviewed_status ?? 'all'}  // Cambiado de || a ??
+            value={filters.reviewed_status ?? 'all'} 
             onValueChange={(value) => onFiltersChange({
               ...filters,
               reviewed_status: value === 'all' ? undefined : (value as 'reviewed' | 'pending')
@@ -548,8 +549,8 @@ export default function LogsPage() {
 
   const searchParams = useSearchParams();
   const [filters, setFilters] = useState<LogFilters>({
-    child_id: searchParams.get('child_id') || undefined,
-    category_id: searchParams.get('category_id') || undefined,
+    child_id: searchParams.get('child_id') ?? undefined,
+    category_id: searchParams.get('category_id') ?? undefined,
   });
 
   // Aplicar filtros
