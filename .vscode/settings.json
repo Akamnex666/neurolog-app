@@ -1,0 +1,13 @@
+{
+    "sonarlint.connectedMode.servers": [
+        {
+            "id": "akamnex666",
+            "url": "https://sonarcloud.io/sonarlint/auth?ideName=Visual+Studio+Code&port=64120",
+            "token": "76b902ba1bd6a6d8483425ee60c7e17812b9824f"
+        }
+    ],
+    "sonarlint.connectedMode.project": {
+        "connectionId": "akamnex666",
+        "projectKey": "Akamnex666_neurolog-app"
+    }
+}
