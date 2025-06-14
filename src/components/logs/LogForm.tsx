@@ -130,14 +130,15 @@ interface TagsInputProps {
 // COMPONENTES AUXILIARES
 // ================================================================
 
-function MoodSelector({ value, onChange }: MoodSelectorProps) {
+function MoodSelector({ value, onChange }: Readonly<MoodSelectorProps>) {
   const moods = [
     { value: 1, emoji: '😢', label: 'Muy triste', color: 'text-red-500' },
     { value: 2, emoji: '😕', label: 'Triste', color: 'text-orange-500' },
     { value: 3, emoji: '😐', label: 'Neutral', color: 'text-yellow-500' },
     { value: 4, emoji: '😊', label: 'Feliz', color: 'text-green-500' },
     { value: 5, emoji: '😄', label: 'Muy feliz', color: 'text-blue-500' }
-  ];
+  ] as const; // <-- Added 'as const' for type safety
+
 
   return (
     <div className="space-y-3">
@@ -180,8 +181,11 @@ function MoodSelector({ value, onChange }: MoodSelectorProps) {
     </div>
   );
 }
-
-function AttachmentsManager({ attachments, onChange, childId }: AttachmentsManagerProps) {
+function AttachmentsManager({
+  attachments,
+  onChange,
+  childId
+}: Readonly<AttachmentsManagerProps>) {
   const [uploading, setUploading] = useState(false);
   const { user } = useAuth();
 
@@ -321,7 +325,7 @@ function AttachmentsManager({ attachments, onChange, childId }: AttachmentsManag
   );
 }
 
-function TagsInput({ tags, onChange }: TagsInputProps) {
+function TagsInput({ tags, onChange }: Readonly<TagsInputProps>) {
   const [newTag, setNewTag] = useState('');
 
   const addTag = () => {
@@ -388,7 +392,13 @@ function TagsInput({ tags, onChange }: TagsInputProps) {
 // COMPONENTE PRINCIPAL
 // ================================================================
 
-export default function LogForm({ log, childId, mode, onSuccess, onCancel }: LogFormProps) {
+export default function LogForm({
+  log,
+  childId,
+  mode,
+  onSuccess,
+  onCancel
+}: Readonly<LogFormProps>) {
   const { user } = useAuth();
   const { children } = useChildren();
   const { createLog, updateLog } = useLogs();
