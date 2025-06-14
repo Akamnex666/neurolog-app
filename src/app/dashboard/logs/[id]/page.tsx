@@ -39,7 +39,6 @@ import {
   ClockIcon,
   ArrowLeftIcon,
   UserIcon,
-  TagIcon,
   ReplyIcon
 } from 'lucide-react';
 import { format } from 'date-fns';
@@ -110,7 +109,7 @@ export default function LogDetailPage() {
       setIsAddingFeedback(false);
       // Refresh log data
       const updatedLog = getLogById(logId);
-      setLog(updatedLog || null);
+      setLog(updatedLog ?? null);
     } catch (error) {
       console.error('Error adding feedback:', error);
     }
@@ -123,7 +122,7 @@ export default function LogDetailPage() {
       setIsReviewing(false);
       // Refresh log data
       const updatedLog = getLogById(logId);
-      setLog(updatedLog || null);
+      setLog(updatedLog ?? null);
     } catch (error) {
       console.error('Error marking as reviewed:', error);
     }

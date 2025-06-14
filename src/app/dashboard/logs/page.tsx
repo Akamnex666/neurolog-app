@@ -26,7 +26,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { useAuth } from '@/components/providers/AuthProvider';
 import { useChildren } from '@/hooks/use-children';
 import { useLogs } from '@/hooks/use-logs';
 import type { 
@@ -535,7 +534,6 @@ function FiltersBar({
 // ================================================================
 
 export default function LogsPage() {
-  const { user } = useAuth();
   const { children } = useChildren({ includeInactive: false });
   const { 
     logs, 
