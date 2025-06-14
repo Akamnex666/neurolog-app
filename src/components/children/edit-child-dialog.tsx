@@ -33,19 +33,26 @@ interface EditChildDialogProps {
 }
 
 interface FormData {
-  name: string
-  birth_date: string
-  diagnosis: string
-  notes: string
+  name: string;
+  birth_date: string;
+  diagnosis: string;
+  notes: string;
 }
 
-export function EditChildDialog({ child, open, onOpenChange }: EditChildDialogProps) {
+interface EditChildDialogProps {
+  child: ChildType; 
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}
+
+export function EditChildDialog({ child, open, onOpenChange }: Readonly<EditChildDialogProps>) {
   const [formData, setFormData] = useState<FormData>({
-    name: '',
-    birth_date: '',
-    diagnosis: '',
-    notes: ''
-  })
+    name: child.name || '',
+    birth_date: child.birth_date || '',
+    diagnosis: child.diagnosis || '',
+    notes: child.notes || ''
+  });
+
   const [loading, setLoading] = useState(false)
   const { updateChild } = useChildren()
   const { toast } = useToast()
