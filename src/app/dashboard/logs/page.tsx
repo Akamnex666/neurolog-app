@@ -424,11 +424,11 @@ function FiltersBar({
             })}
           />
           {/* Review Status */}
-          <Select 
-            value={filters.reviewed_status ?? 'all'} 
-            onValueChange={(value) => onFiltersChange({ 
-              ...filters, 
-              reviewed_status: value === 'all' ? undefined : value as any
+          <Select
+            value={filters.reviewed_status ?? 'all'}
+            onValueChange={(value: 'all' | 'reviewed' | 'pending') => onFiltersChange({
+              ...filters,
+              reviewed_status: value === 'all' ? undefined : value
             })}
           >
             <SelectTrigger>
