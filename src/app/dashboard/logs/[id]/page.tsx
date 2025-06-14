@@ -29,20 +29,17 @@ import {
   EditIcon,
   MoreVerticalIcon,
   CalendarIcon,
-  HeartIcon,
   MapPinIcon,
   CloudIcon,
   FileIcon,
   MessageSquareIcon,
   AlertCircleIcon,
   CheckCircleIcon,
-  EyeIcon,
   EyeOffIcon,
   ClockIcon,
   ArrowLeftIcon,
   UserIcon,
   TagIcon,
-  ThermometerIcon,
   ReplyIcon
 } from 'lucide-react';
 import { format } from 'date-fns';
@@ -64,7 +61,7 @@ export default function LogDetailPage() {
   useEffect(() => {
     if (logId && !loading) {
       const foundLog = getLogById(logId);
-      setLog(foundLog || null);
+      setLog(foundLog ?? null);
     }
   }, [logId, loading, getLogById]);
 
@@ -207,7 +204,7 @@ export default function LogDetailPage() {
                     style={{ backgroundColor: log.category_color }}
                   />
                   <div>
-                    <CardTitle className="text-lg">{log.category_name || 'Sin categoría'}</CardTitle>
+                    <CardTitle className="text-lg">{log.category_name ?? 'Sin categoría'}</CardTitle>
                     <CardDescription>
                       Registrado por {log.logged_by_name}
                     </CardDescription>

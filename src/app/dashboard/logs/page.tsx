@@ -71,7 +71,13 @@ interface LogCardProps {
   onAddFeedback: (log: LogWithDetails) => void;
 }
 
-function LogCard({ log, onEdit, onViewDetails, onTogglePrivacy, onAddFeedback }: LogCardProps) {
+function LogCard({
+  log,
+  onEdit,
+  onViewDetails,
+  onTogglePrivacy,
+  onAddFeedback
+}: Readonly<LogCardProps>) {
   const getIntensityColor = (level: IntensityLevel) => {
     switch (level) {
       case 'low': return 'bg-green-100 text-green-800';
@@ -411,10 +417,10 @@ function FiltersBar({
 
           {/* Review Status */}
           <Select
-            value={filters.reviewed_status ?? 'all'} 
+            value={filters.reviewed_status ?? 'all'}
             onValueChange={(value) => onFiltersChange({
               ...filters,
-              reviewed_status: value === 'all' ? undefined : (value as 'reviewed' | 'pending')
+              reviewed_status: value === 'all' ? undefined : value as 'reviewed' | 'pending'
             })}
           />
           {/* Review Status */}
@@ -502,11 +508,11 @@ function FiltersBar({
           </Select>
 
           {/* Follow-up Status */}
-          <Select 
-            value={filters.follow_up_status ?? 'all'} 
-            onValueChange={(value) => onFiltersChange({ 
-              ...filters, 
-              follow_up_status: value === 'all' ? undefined : value as any
+          <Select
+            value={filters.follow_up_status ?? 'all'}
+            onValueChange={(value) => onFiltersChange({
+              ...filters,
+              follow_up_status: value === 'all' ? undefined : value as 'required' | 'completed'
             })}
           >
             <SelectTrigger>
